@@ -1,6 +1,9 @@
 #include "SDL.h"
+#include "Click.h"
+#include "Board.h"
 #include <iostream>
 #include <string>
+#include<array>
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 600
@@ -79,6 +82,22 @@ int main(int argc, char* argv[]) {
                             xpos++;
                             cout << "RIGHT";
                             break;
+                    }
+                }
+
+                if (e.type == SDL_MOUSEBUTTONDOWN) {
+                    switch (e.button.button) {
+                    case SDL_BUTTON_LEFT:
+                        Click click;
+                        Board board;
+                        cout << "X Position is : " << e.motion.x << endl;
+                        cout << "Y Position is : " << e.motion.y << endl;
+                        click.mouseDown.x = e.motion.x;
+                        click.mouseDown.y = e.motion.y;
+
+                        array<int,2> gridLocation = board.translateClickToGrid(click,SCREEN_HEIGHT,SCREEN_WIDTH);
+                        xpos = gridLocation[0];
+                        ypos = gridLocation[1];
                     }
                 }
             }
