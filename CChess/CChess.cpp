@@ -48,6 +48,8 @@ int main(int argc, char* argv[]) {
     int xpos = 0;
     int ypos = 0;
 
+    SDL_Rect rectstuff;
+
     if (!init()) {
         cout << "Failed to init\n";
     }
@@ -58,17 +60,39 @@ int main(int argc, char* argv[]) {
                 if (e.type == SDL_QUIT) {
                     quit = true;
                 }
-
+                
                 if (e.type == SDL_KEYDOWN) {
-                    ypos++;
-                    SDL_RenderClear(gRender);
-                    cout << "Test";
+                    switch (e.key.keysym.sym) {
+                        case SDLK_DOWN:
+                            ypos++;
+                            cout << "DOWN";
+                            break;
+                        case SDLK_UP:
+                            ypos--;
+                            cout << "UP";
+                            break;
+                        case SDLK_LEFT:
+                            xpos--;
+                            cout << "LEFT";
+                            break;
+                        case SDLK_RIGHT:
+                            xpos++;
+                            cout << "RIGHT";
+                            break;
+                    }
                 }
             }
 
-            SDL_Rect fillRect = { 0, (SCREEN_HEIGHT / 8) * ypos, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
-            SDL_SetRenderDrawColor(gRender, 0x00, 0xFF, 0x00, 0xFF);
+            SDL_RenderClear(gRender);
+
+            SDL_Rect fillRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+            SDL_SetRenderDrawColor(gRender, 0xFF, 0xFF, 0xFF, 0xFF);
             SDL_RenderFillRect(gRender, &fillRect);
+
+            rectstuff = { (SCREEN_WIDTH / 8) * xpos, (SCREEN_HEIGHT / 8) * ypos, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+            SDL_SetRenderDrawColor(gRender, 0x00, 0xFF, 0x00, 0xFF);
+            SDL_RenderFillRect(gRender, &rectstuff);
+
             SDL_RenderPresent(gRender);
         }
     }
