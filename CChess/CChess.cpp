@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
     gRender = NULL;
     int xpos = 0;
     int ypos = 0;
+    Board board;
 
     SDL_Rect rectstuff;
 
@@ -57,6 +58,15 @@ int main(int argc, char* argv[]) {
         cout << "Failed to init\n";
     }
     else {
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board.board[i][j] == 'P') {
+                    xpos = j;
+                    ypos = i;
+                }
+            }
+        }
 
         while (!quit) {
             while (SDL_PollEvent(&e) != 0) {
@@ -89,7 +99,6 @@ int main(int argc, char* argv[]) {
                     switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
                         Click click;
-                        Board board;
                         cout << "X Position is : " << e.motion.x << endl;
                         cout << "Y Position is : " << e.motion.y << endl;
                         click.mouseDown.x = e.motion.x;
@@ -121,6 +130,16 @@ int main(int argc, char* argv[]) {
             SDL_Rect fillRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
             SDL_SetRenderDrawColor(gRender, 0xFF, 0xFF, 0xFF, 0xFF);
             SDL_RenderFillRect(gRender, &fillRect);
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (board.board[i][j] == 'P') {
+                        rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+                        SDL_SetRenderDrawColor(gRender, 0xFF, 0x00, 0x00, 0xFF);
+                        SDL_RenderFillRect(gRender, &rectstuff);
+                    }
+                }
+            }
 
             rectstuff = { (SCREEN_WIDTH / 8) * xpos, (SCREEN_HEIGHT / 8) * ypos, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
             SDL_SetRenderDrawColor(gRender, 0x00, 0xFF, 0x00, 0xFF);

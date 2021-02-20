@@ -5,6 +5,23 @@ using std::cout;
 using std::endl;
 using std::array;
 
+Board::Board()
+{
+	for (int i = 0; i < 8; i++) {
+		board[6][i] = 'P';
+	}
+
+	board[7][0] = 'R';
+	board[7][7] = 'R';
+	board[7][1] = 'K';
+	board[7][6] = 'K';
+	board[7][2] = 'B';
+	board[7][5] = 'B';
+	board[7][4] = 'I';
+	board[7][3] = 'Q';
+
+}
+
 array<int,2> Board::translateClickToGrid(Click clk, int screenHeight, int screenWidth)
 {
 	array<int, 2> gridCoords;
