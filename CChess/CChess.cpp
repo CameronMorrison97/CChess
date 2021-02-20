@@ -95,7 +95,21 @@ int main(int argc, char* argv[]) {
                         click.mouseDown.x = e.motion.x;
                         click.mouseDown.y = e.motion.y;
 
-                        array<int,2> gridLocation = board.translateClickToGrid(click,SCREEN_HEIGHT,SCREEN_WIDTH);
+                        array<int, 2> gridLocation = board.translateClickToGrid(click, SCREEN_HEIGHT, SCREEN_WIDTH);
+                    }
+                }
+
+                if (e.type == SDL_MOUSEBUTTONUP) {
+                    switch (e.button.button) {
+                    case SDL_BUTTON_LEFT:
+                        Click click;
+                        Board board;
+                        cout << "X Position is : " << e.motion.x << endl;
+                        cout << "Y Position is : " << e.motion.y << endl;
+                        click.mouseDown.x = e.motion.x;
+                        click.mouseDown.y = e.motion.y;
+
+                        array<int, 2> gridLocation = board.translateClickToGrid(click, SCREEN_HEIGHT, SCREEN_WIDTH);
                         xpos = gridLocation[0];
                         ypos = gridLocation[1];
                     }
