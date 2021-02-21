@@ -65,6 +65,40 @@ array<int,2> Board::translateClickToGrid(Click clk, int screenHeight, int screen
 	return gridCoords;
 }
 
+void Board::drawBoard(SDL_Renderer*& gRender, int SCREEN_WIDTH,int SCREEN_HEIGHT,SDL_Rect& rectstuff,SDL_Texture* pawnTexture,SDL_Texture* rookTexture,SDL_Texture* knightTexture,SDL_Texture* bishopTexture)
+{
+	SDL_RenderClear(gRender);
+
+	SDL_Rect fillRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_SetRenderDrawColor(gRender, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderFillRect(gRender, &fillRect);
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (board[i][j] == 'P') {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, pawnTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j] == 'R') {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, rookTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j] == 'K') {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, knightTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j] == 'B') {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, bishopTexture, NULL, &rectstuff);
+			}
+		}
+	}
+
+
+
+	SDL_RenderPresent(gRender);
+}
+
 
 array<int, 2> Board::translateClickToGridMouseUp(Click clk, int screenHeight, int screenWidth) {
 	array<int, 2> gridCoords = { -1,-1 };
