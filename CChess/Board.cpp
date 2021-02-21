@@ -24,7 +24,7 @@ Board::Board()
 
 array<int,2> Board::translateClickToGrid(Click clk, int screenHeight, int screenWidth)
 {
-	array<int, 2> gridCoords;
+	array<int, 2> gridCoords = { -1,-1 };
 
 	if (clk.mouseDown.x >= 0 && clk.mouseDown.x <= (screenWidth / 8)) {
 		gridCoords[0] = 0;
@@ -66,8 +66,8 @@ array<int,2> Board::translateClickToGrid(Click clk, int screenHeight, int screen
 }
 
 
-array<int, 2> translateClickToGridMouseUp(Click clk, int screenHeight, int screenWidth) {
-	array<int, 2> gridCoords;
+array<int, 2> Board::translateClickToGridMouseUp(Click clk, int screenHeight, int screenWidth) {
+	array<int, 2> gridCoords = { -1,-1 };
 
 	if (clk.mouseUp.x >= 0 && clk.mouseUp.x <= (screenWidth / 8)) {
 		gridCoords[0] = 0;

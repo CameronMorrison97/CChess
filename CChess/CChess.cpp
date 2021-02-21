@@ -1,4 +1,5 @@
 #include "SDL.h"
+#include "SDL_image.h"
 #include "Click.h"
 #include "Board.h"
 #include <iostream>
@@ -27,6 +28,8 @@ bool init() {
             cout << "window could not be created! SDL Error: " << SDL_GetError() << endl;
             return false;
         }
+
+        IMG_Init(IMG_INIT_PNG);
     }
 
     return true;
@@ -41,6 +44,7 @@ void close() {
     window = NULL;
     gRender = NULL;
 
+    IMG_Quit();
     SDL_Quit();
 }
 
@@ -58,15 +62,11 @@ int main(int argc, char* argv[]) {
         cout << "Failed to init\n";
     }
     else {
+        SDL_Texture* pawnTexture = IMG_LoadTexture(gRender, "Pawn.png");
+        SDL_Texture* rookTexture = IMG_LoadTexture(gRender, "Rook.png");
+        SDL_Texture* knightTexture = IMG_LoadTexture(gRender, "Knight.png");
+        SDL_Texture* bishopTexture = IMG_LoadTexture(gRender, "Bishop.png");
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (board.board[i][j] == 'P') {
-                    xpos = j;
-                    ypos = i;
-                }
-            }
-        }
 
         while (!quit) {
             while (SDL_PollEvent(&e) != 0) {
@@ -105,6 +105,7 @@ int main(int argc, char* argv[]) {
                         click.mouseDown.y = e.motion.y;
 
                         array<int, 2> gridLocation = board.translateClickToGrid(click, SCREEN_HEIGHT, SCREEN_WIDTH);
+                        board.currentlySelectedLocation = gridLocation;
                     }
                 }
 
@@ -112,15 +113,18 @@ int main(int argc, char* argv[]) {
                     switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
                         Click click;
-                        Board board;
                         cout << "X Position is : " << e.motion.x << endl;
                         cout << "Y Position is : " << e.motion.y << endl;
-                        click.mouseDown.x = e.motion.x;
-                        click.mouseDown.y = e.motion.y;
+                        click.mouseUp.x = e.motion.x;
+                        click.mouseUp.y = e.motion.y;
 
-                        array<int, 2> gridLocation = board.translateClickToGrid(click, SCREEN_HEIGHT, SCREEN_WIDTH);
-                        xpos = gridLocation[0];
-                        ypos = gridLocation[1];
+                        array<int, 2> gridLocation = board.translateClickToGridMouseUp(click, SCREEN_HEIGHT, SCREEN_WIDTH);
+                        array<int, 2> oldLocation = board.currentlySelectedLocation;
+                        
+                        if (board.board[oldLocation[1]][oldLocation[0]] == 'P') {
+                            board.board[oldLocation[1]][oldLocation[0]] = NULL;
+                            board.board[gridLocation[1]][gridLocation[0]] = 'P';
+                        }
                     }
                 }
             }
@@ -135,15 +139,22 @@ int main(int argc, char* argv[]) {
                 for (int j = 0; j < 8; j++) {
                     if (board.board[i][j] == 'P') {
                         rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
-                        SDL_SetRenderDrawColor(gRender, 0xFF, 0x00, 0x00, 0xFF);
-                        SDL_RenderFillRect(gRender, &rectstuff);
+                        SDL_RenderCopy(gRender, pawnTexture, NULL, &rectstuff);
+                    }
+                    else if (board.board[i][j] == 'R') {
+                        rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+                        SDL_RenderCopy(gRender, rookTexture, NULL, &rectstuff);
+                    }else if (board.board[i][j] == 'K') {
+                        rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+                        SDL_RenderCopy(gRender, knightTexture, NULL, &rectstuff);
+                    }else if (board.board[i][j] == 'B') {
+                        rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+                        SDL_RenderCopy(gRender, bishopTexture, NULL, &rectstuff);
                     }
                 }
             }
 
-            rectstuff = { (SCREEN_WIDTH / 8) * xpos, (SCREEN_HEIGHT / 8) * ypos, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
-            SDL_SetRenderDrawColor(gRender, 0x00, 0xFF, 0x00, 0xFF);
-            SDL_RenderFillRect(gRender, &rectstuff);
+            
 
             SDL_RenderPresent(gRender);
         }
