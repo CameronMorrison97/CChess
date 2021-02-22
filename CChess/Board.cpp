@@ -49,6 +49,7 @@ Board::Board(SDL_Renderer*& gRender)
 	this->blackkingTexture = IMG_LoadTexture(gRender, "blackKing.png");
 	this->blackqueenTexture = IMG_LoadTexture(gRender, "blackQueen.png");
 
+	this->Chessboard = IMG_LoadTexture(gRender, "Chessboard.png");
 }
 
 array<int,2> Board::translateClickToGrid(Click clk, int screenHeight, int screenWidth)
@@ -96,46 +97,63 @@ array<int,2> Board::translateClickToGrid(Click clk, int screenHeight, int screen
 
 void Board::movePiece(array<int,2> gridLocation,array<int,2> oldLocation)
 {
-
-	if (board[oldLocation[1]][oldLocation[0]].compare("WP") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "WP";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("WR") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "WR";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("WK") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "WK";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("WB") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "WB";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("WI") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "WI";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("WQ") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "WQ";
+	if (this->engine.turn == 0) {
+		this->engine.firstMove(board[oldLocation[1]][oldLocation[0]]);
 	}
 
-	if (board[oldLocation[1]][oldLocation[0]].compare("BP") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "BP";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("BR") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "BR";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("BK") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "BK";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("BB") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "BB";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("BI") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "BI";
-	}else if (board[oldLocation[1]][oldLocation[0]].compare("BQ") == 0) {
-		board[oldLocation[1]][oldLocation[0]] = "";
-		board[gridLocation[1]][gridLocation[0]] = "BQ";
+	if (this->engine.validMove == true) {
+		if (board[oldLocation[1]][oldLocation[0]].compare("WP") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "WP";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("WR") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "WR";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("WK") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "WK";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("WB") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "WB";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("WI") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "WI";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("WQ") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "WQ";
+		}
+
+		if (board[oldLocation[1]][oldLocation[0]].compare("BP") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "BP";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("BR") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "BR";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("BK") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "BK";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("BB") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "BB";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("BI") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "BI";
+		}
+		else if (board[oldLocation[1]][oldLocation[0]].compare("BQ") == 0) {
+			board[oldLocation[1]][oldLocation[0]] = "";
+			board[gridLocation[1]][gridLocation[0]] = "BQ";
+		}
 	}
+
+	this->engine.endTurn();
 }
 
 void Board::drawBoard(SDL_Renderer*& gRender, int SCREEN_WIDTH,int SCREEN_HEIGHT,SDL_Rect& rectstuff)
@@ -143,8 +161,7 @@ void Board::drawBoard(SDL_Renderer*& gRender, int SCREEN_WIDTH,int SCREEN_HEIGHT
 	SDL_RenderClear(gRender);
 
 	SDL_Rect fillRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-	SDL_SetRenderDrawColor(gRender, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderFillRect(gRender, &fillRect);
+	SDL_RenderCopy(gRender, Chessboard, NULL, &fillRect);
 
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {

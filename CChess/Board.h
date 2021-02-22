@@ -33,5 +33,7 @@ public:
 	SDL_Texture* blackkingTexture;
 	SDL_Texture* blackqueenTexture;
 	ChessLogic engine;
+
+	SDL_Texture* Chessboard;
 };
 
