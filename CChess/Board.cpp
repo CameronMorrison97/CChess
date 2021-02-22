@@ -5,20 +5,49 @@ using std::cout;
 using std::endl;
 using std::array;
 
-Board::Board()
+Board::Board(SDL_Renderer*& gRender)
 {
+	// Draw White pieces
 	for (int i = 0; i < 8; i++) {
-		board[6][i] = 'P';
+		board[6][i] = "WP";
 	}
 
-	board[7][0] = 'R';
-	board[7][7] = 'R';
-	board[7][1] = 'K';
-	board[7][6] = 'K';
-	board[7][2] = 'B';
-	board[7][5] = 'B';
-	board[7][4] = 'I';
-	board[7][3] = 'Q';
+	board[7][0] = "WR";
+	board[7][7] = "WR";
+	board[7][1] = "WK";
+	board[7][6] = "WK";
+	board[7][2] = "WB";
+	board[7][5] = "WB";
+	board[7][4] = "WI";
+	board[7][3] = "WQ";
+
+	this->whitepawnTexture = IMG_LoadTexture(gRender, "whitePawn.png");
+	this->whiterookTexture = IMG_LoadTexture(gRender, "whiteRook.png");
+	this->whiteknightTexture = IMG_LoadTexture(gRender, "whiteKnight.png");
+	this->whitebishopTexture = IMG_LoadTexture(gRender, "whiteBishop.png");
+	this->whitekingTexture = IMG_LoadTexture(gRender, "whiteKing.png");
+	this->whitequeenTexture = IMG_LoadTexture(gRender, "whiteQueen.png");
+
+	// Draw Black pieces
+	for (int i = 0; i < 8; i++) {
+		board[1][i] = "BP";
+	}
+
+	board[0][0] = "BR";
+	board[0][7] = "BR";
+	board[0][1] = "BK";
+	board[0][6] = "BK";
+	board[0][2] = "BB";
+	board[0][5] = "BB";
+	board[0][4] = "BI";
+	board[0][3] = "BQ";
+	
+	this->blackpawnTexture = IMG_LoadTexture(gRender, "blackPawn.png");
+	this->blackrookTexture = IMG_LoadTexture(gRender, "blackRook.png");
+	this->blackknightTexture = IMG_LoadTexture(gRender, "blackKnight.png");
+	this->blackbishopTexture = IMG_LoadTexture(gRender, "blackBishop.png");
+	this->blackkingTexture = IMG_LoadTexture(gRender, "blackKing.png");
+	this->blackqueenTexture = IMG_LoadTexture(gRender, "blackQueen.png");
 
 }
 
@@ -65,7 +94,51 @@ array<int,2> Board::translateClickToGrid(Click clk, int screenHeight, int screen
 	return gridCoords;
 }
 
-void Board::drawBoard(SDL_Renderer*& gRender, int SCREEN_WIDTH,int SCREEN_HEIGHT,SDL_Rect& rectstuff,SDL_Texture* pawnTexture,SDL_Texture* rookTexture,SDL_Texture* knightTexture,SDL_Texture* bishopTexture)
+void Board::movePiece(array<int,2> gridLocation,array<int,2> oldLocation)
+{
+
+	if (board[oldLocation[1]][oldLocation[0]].compare("WP") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "WP";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("WR") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "WR";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("WK") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "WK";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("WB") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "WB";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("WI") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "WI";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("WQ") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "WQ";
+	}
+
+	if (board[oldLocation[1]][oldLocation[0]].compare("BP") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "BP";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("BR") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "BR";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("BK") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "BK";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("BB") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "BB";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("BI") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "BI";
+	}else if (board[oldLocation[1]][oldLocation[0]].compare("BQ") == 0) {
+		board[oldLocation[1]][oldLocation[0]] = "";
+		board[gridLocation[1]][gridLocation[0]] = "BQ";
+	}
+}
+
+void Board::drawBoard(SDL_Renderer*& gRender, int SCREEN_WIDTH,int SCREEN_HEIGHT,SDL_Rect& rectstuff)
 {
 	SDL_RenderClear(gRender);
 
@@ -75,21 +148,53 @@ void Board::drawBoard(SDL_Renderer*& gRender, int SCREEN_WIDTH,int SCREEN_HEIGHT
 
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (board[i][j] == 'P') {
+			if (board[i][j].compare("WP") == 0) {
 				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
-				SDL_RenderCopy(gRender, pawnTexture, NULL, &rectstuff);
+				SDL_RenderCopy(gRender, whitepawnTexture, NULL, &rectstuff);
 			}
-			else if (board[i][j] == 'R') {
+			else if (board[i][j].compare("WR") == 0) {
 				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
-				SDL_RenderCopy(gRender, rookTexture, NULL, &rectstuff);
+				SDL_RenderCopy(gRender, whiterookTexture, NULL, &rectstuff);
 			}
-			else if (board[i][j] == 'K') {
+			else if (board[i][j].compare("WK") == 0) {
 				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
-				SDL_RenderCopy(gRender, knightTexture, NULL, &rectstuff);
+				SDL_RenderCopy(gRender, whiteknightTexture, NULL, &rectstuff);
 			}
-			else if (board[i][j] == 'B') {
+			else if (board[i][j].compare("WB") == 0) {
 				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
-				SDL_RenderCopy(gRender, bishopTexture, NULL, &rectstuff);
+				SDL_RenderCopy(gRender, whitebishopTexture, NULL, &rectstuff);
+			}else if (board[i][j].compare("WI") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, whitekingTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j].compare("WQ") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, whitequeenTexture, NULL, &rectstuff);
+			}
+
+			if (board[i][j].compare("BP") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, blackpawnTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j].compare("BR") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, blackrookTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j].compare("BK") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, blackknightTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j].compare("BB") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, blackbishopTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j].compare("BI") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, blackkingTexture, NULL, &rectstuff);
+			}
+			else if (board[i][j].compare("BQ") == 0) {
+				rectstuff = { (SCREEN_WIDTH / 8) * j, (SCREEN_HEIGHT / 8) * i, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 8 };
+				SDL_RenderCopy(gRender, blackqueenTexture, NULL, &rectstuff);
 			}
 		}
 	}

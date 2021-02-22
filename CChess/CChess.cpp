@@ -54,7 +54,6 @@ int main(int argc, char* argv[]) {
     gRender = NULL;
     int xpos = 0;
     int ypos = 0;
-    Board board;
 
     SDL_Rect rectstuff;
 
@@ -62,11 +61,7 @@ int main(int argc, char* argv[]) {
         cout << "Failed to init\n";
     }
     else {
-        SDL_Texture* pawnTexture = IMG_LoadTexture(gRender, "Pawn.png");
-        SDL_Texture* rookTexture = IMG_LoadTexture(gRender, "Rook.png");
-        SDL_Texture* knightTexture = IMG_LoadTexture(gRender, "Knight.png");
-        SDL_Texture* bishopTexture = IMG_LoadTexture(gRender, "Bishop.png");
-
+        Board board(gRender);
 
         while (!quit) {
             while (SDL_PollEvent(&e) != 0) {
@@ -121,15 +116,12 @@ int main(int argc, char* argv[]) {
                         array<int, 2> gridLocation = board.translateClickToGridMouseUp(click, SCREEN_HEIGHT, SCREEN_WIDTH);
                         array<int, 2> oldLocation = board.currentlySelectedLocation;
                         
-                        if (board.board[oldLocation[1]][oldLocation[0]] == 'P') {
-                            board.board[oldLocation[1]][oldLocation[0]] = NULL;
-                            board.board[gridLocation[1]][gridLocation[0]] = 'P';
-                        }
+                        board.movePiece(gridLocation, oldLocation);
                     }
                 }
             }
 
-            board.drawBoard(gRender, SCREEN_WIDTH, SCREEN_HEIGHT, rectstuff, pawnTexture, rookTexture, knightTexture, bishopTexture);
+            board.drawBoard(gRender, SCREEN_WIDTH, SCREEN_HEIGHT, rectstuff);
         }
     }
 

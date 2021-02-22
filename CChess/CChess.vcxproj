@@ -144,10 +144,12 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="CChess.cpp" />
+    <ClCompile Include="ChessLogic.cpp" />
     <ClCompile Include="Click.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="Click.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
